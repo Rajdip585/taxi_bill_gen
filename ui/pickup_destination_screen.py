@@ -191,7 +191,7 @@ class PickupDestinationScreen(QWidget):
             distance = self.maps_handler.get_distance_km(pickup, destination)
             billing = BillingHandler()
             amount = billing.calculate_bill(distance)
-            billing.generate_and_store_bill(self.username, pickup, destination)
+            billing_data_from_module = billing.generate_and_store_bill(self.username, pickup, destination)
 
             # QMessageBox.information(
             #     self,
@@ -199,7 +199,14 @@ class PickupDestinationScreen(QWidget):
             #     f"Distance: {distance:.2f} km\nAmount: ₹{amount:.2f}\nBill saved successfully!"
             # )
             
-            bill_data = {'username': self.username, 'pickup': pickup, 'destination': destination, 'distance': distance, 'amount': amount}
+            bill_data = {
+                'username': billing_data_from_module['username'],
+                'pickup': billing_data_from_module['pickup'], 
+                'destination': billing_data_from_module['destination'], 
+                'distance': billing_data_from_module['distance'], 
+                'amount': billing_data_from_module['amount'], 
+                'bill_id':billing_data_from_module['bill_id']
+             }
             self.bill_screen = BillScreen(bill_data)
             self.bill_screen.show()
 

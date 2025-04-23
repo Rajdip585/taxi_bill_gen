@@ -55,4 +55,19 @@ def log_bill(name, pickup, destination, distance, amount):
             INSERT INTO bills (username, pickup, destination, distance, amount, timestamp)
             VALUES (?, ?, ?, ?, ?, ?)
         ''', (name, pickup, destination, distance, amount, timestamp))
+        bill_id = cursor.lastrowid  # Get the ID of the inserted row
         conn.commit()
+        return bill_id
+
+
+def update_bill(utr, id):
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        cursor.execute('''
+            UPDATE bills
+            SET utr = ?, timestamp = ?
+            WHERE id = ?
+        ''', (utr, timestamp, id))
+        conn.commit()
+        return cursor.rowcount  # Returns number of rows updated
