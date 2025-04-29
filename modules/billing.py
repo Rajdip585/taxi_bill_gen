@@ -2,7 +2,7 @@ from modules.maps_api_handler import MapsAPIHandler
 from modules import db_handler
 
 class BillingHandler:
-    def __init__(self, rate_per_km=10):
+    def __init__(self, rate_per_km=0.1):
         self.maps = MapsAPIHandler()
         self.rate_per_km = rate_per_km
 
@@ -14,10 +14,11 @@ class BillingHandler:
             distance = self.maps.get_distance_km(pickup, destination)
             amount = self.calculate_bill(distance)
 
-            db_handler.log_bill(name, pickup, destination, distance, amount)
+            bill_id = db_handler.log_bill(name, pickup, destination, distance, amount)
 
-            print(f"[BILLING] User: {name} | Distance: {distance} km | Amount: ₹{amount}")
+            print(f"[BILLING] User: {name} | Distance: {distance} km | Amount: ₹{amount} | bill id: {bill_id}")
             return {
+                "bill_id":bill_id,
                 "username": name,
                 "pickup": pickup,
                 "destination": destination,
